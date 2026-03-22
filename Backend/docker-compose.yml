@@ -1,0 +1,11 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: sigmagpt-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - sigmagpt_mongo_data:/data/db
+
+volumes:
+  sigmagpt_mongo_data:
