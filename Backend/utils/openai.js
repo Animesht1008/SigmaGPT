@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 const getOpenAIAPIResponse = async(message) => {
     // =========================
     // LOCALHOST-ONLY (DEV) CODE
