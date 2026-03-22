@@ -11,13 +11,14 @@ This project uses **`render.yaml`** at the repo root so you can deploy both the 
    - Replace `<password>` with your user’s password (URL-encode special characters if needed).
    - Insert your database name before the query string, e.g. `...mongodb.net/sigmagpt?...` (this app uses the `sigmagpt` database name).
 
-## 2. Push code to GitHub
+## 2. GitHub repository
 
-1. Create an empty repository on GitHub (no need to add a README if this repo already has one).
-2. From your machine (replace `YOUR_USER` / `YOUR_REPO`):
+Canonical repo: **[github.com/Animesht1008/SigmaGPT](https://github.com/Animesht1008/SigmaGPT)**.
+
+If you clone elsewhere and need to push:
 
 ```bash
-git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
+git remote add origin https://github.com/Animesht1008/SigmaGPT.git
 git branch -M main
 git push -u origin main
 ```
