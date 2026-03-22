@@ -1,0 +1,10 @@
+{
+  "name": "sigmagpt",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix Backend install && npm --prefix Frontend install",
+    "dev": "npm --prefix Backend run dev & npm --prefix Frontend run dev",
+    "dev:backend": "npm --prefix Backend run dev",
+    "dev:frontend": "npm --prefix Frontend run dev"
+  }
+}

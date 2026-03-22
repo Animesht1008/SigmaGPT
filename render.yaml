@@ -1,0 +1,40 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# After connecting this repo: New → Blueprint → apply this file.
+# You will be prompted for MONGODB_URI and OPENAI_API_KEY (never commit those).
+
+services:
+  - type: web
+    name: sigmagpt-backend
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: Backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "20.18.0"
+      - key: MONGODB_URI
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: MOCK_OPENAI
+        value: "false"
+      # Optional: lock CORS to your static site URL after first deploy (Dashboard → Backend → Environment).
+      # If unset, the app allows any origin (see Backend/server.js).
+
+  - type: web
+    name: sigmagpt-frontend
+    runtime: static
+    region: oregon
+    plan: free
+    rootDir: Frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./Frontend/dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          name: sigmagpt-backend
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
