@@ -5,7 +5,8 @@ import {v1 as uuidv1} from "uuid";
 
 function Sidebar() {
     const {allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats} = useContext(MyContext);
-    const API_BASE_URL = (import.meta?.env?.VITE_API_BASE_URL || "http://localhost:8080").replace(/\/$/, "");
+    const API_BASE_URL = (import.meta?.env?.VITE_API_BASE_URL || "https://sigmagpt-y81q.onrender.com" || "http://localhost:8080").replace(/\/$/, "");
+    console.log("[API] Using backend URL:", API_BASE_URL);
 
     const getAllThreads = async () => {
         try {

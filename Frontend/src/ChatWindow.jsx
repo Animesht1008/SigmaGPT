@@ -10,7 +10,10 @@ function ChatWindow() {
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState(null);
-    const API_BASE_URL = (import.meta?.env?.VITE_API_BASE_URL || "http://localhost:8080").replace(/\/$/, "");
+    
+    // Determine API URL: prioritize env var, fallback to production, then local dev
+    const API_BASE_URL = (import.meta?.env?.VITE_API_BASE_URL || "https://sigmagpt-y81q.onrender.com" || "http://localhost:8080").replace(/\/$/, "");
+    console.log("[API] Using backend URL:", API_BASE_URL);
 
     const getReply = async () => {
         const trimmed = (prompt ?? "").trim();
