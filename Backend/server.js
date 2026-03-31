@@ -20,7 +20,32 @@ app.use(express.json({ limit: "1mb" }));
 // PROD: Strict allowlist from environment variable
 // 
 // START DEV CODE (comment out for production)
-if (!IS_PRODUCTION) {
+// if (!IS_PRODUCTION) {
+//   app.use(
+//     cors({
+//       origin: CORS_ORIGIN === "*" ? "*" : CORS_ORIGIN.split(",").map((s) => s.trim()),
+//       credentials: true,
+//     })
+//   );
+//   console.log(`[DEV] CORS enabled for: ${CORS_ORIGIN}`);
+// }
+// END DEV CODE
+
+// START PROD CODE (uncomment for production)
+if (IS_PRODUCTION) {
+  const allowedOrigins = (CORS_ORIGIN || "").split(",").map((s) => s.trim()).filter(Boolean);
+  if (allowedOrigins.length === 0) {
+    console.warn("[PROD] Warning: CORS_ORIGIN not configured, allowing no origins");
+  }
+  app.use(
+    cors({
+      origin: allowedOrigins,
+      credentials: true,
+      optionsSuccessStatus: 200,
+    })
+  );
+  console.log(`[PROD] CORS enabled for: ${allowedOrigins.join(", ")}`);
+} else {
   app.use(
     cors({
       origin: CORS_ORIGIN === "*" ? "*" : CORS_ORIGIN.split(",").map((s) => s.trim()),
@@ -29,23 +54,6 @@ if (!IS_PRODUCTION) {
   );
   console.log(`[DEV] CORS enabled for: ${CORS_ORIGIN}`);
 }
-// END DEV CODE
-
-// START PROD CODE (uncomment for production)
-// if (IS_PRODUCTION) {
-//   const allowedOrigins = (CORS_ORIGIN || "").split(",").map((s) => s.trim()).filter(Boolean);
-//   if (allowedOrigins.length === 0) {
-//     console.warn("[PROD] Warning: CORS_ORIGIN not configured, allowing no origins");
-//   }
-//   app.use(
-//     cors({
-//       origin: allowedOrigins,
-//       credentials: true,
-//       optionsSuccessStatus: 200,
-//     })
-//   );
-//   console.log(`[PROD] CORS enabled for: ${allowedOrigins.join(", ")}`);
-// }
 // END PROD CODE
 
 // Security middleware
