@@ -5,6 +5,11 @@ import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 
+// Configurable typing speed (milliseconds per word)
+// DEV: 40ms for smooth effect
+// PROD: Adjust based on VITE_TYPING_SPEED env var (default 40ms)
+const TYPING_SPEED = Number(import.meta.env.VITE_TYPING_SPEED) || 40;
+
 function Chat() {
     const {newChat, prevChats, reply} = useContext(MyContext);
     const [latestReply, setLatestReply] = useState(null);
@@ -25,7 +30,7 @@ function Chat() {
 
             idx++;
             if(idx >= content.length) clearInterval(interval);
-        }, 40);
+        }, TYPING_SPEED);
 
         return () => clearInterval(interval);
 

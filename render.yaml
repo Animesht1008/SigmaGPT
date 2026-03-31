@@ -1,40 +1,109 @@
-# Render Blueprint — https://render.com/docs/blueprint-spec
-# After connecting this repo: New → Blueprint → apply this file.
-# You will be prompted for MONGODB_URI and OPENAI_API_KEY (never commit those).
+# ============================================
+# Render Blueprint Configuration
+# ============================================
+# Deploy both frontend and backend from one GitHub repo
+# Documentation: https://render.com/docs/blueprint-spec
+#
+# Usage:
+# 1. Push this file to your GitHub repo
+# 2. Go to https://render.com/dashboard → New → Blueprint
+# 3. Connect your GitHub repo
+# 4. Set environment variables when prompted
+#
+# Variables to set in Render Dashboard:
+# - MONGODB_URI: Your MongoDB Atlas SRV connection string
+# - OPENAI_API_KEY: Your OpenAI API key
+# - CORS_ORIGIN: Your frontend URL (auto-populated if using static site)
 
 services:
+  # Backend API Service
   - type: web
     name: sigmagpt-backend
     runtime: node
     region: oregon
-    plan: free
+    plan: free  # Can upgrade to standard for production
     rootDir: Backend
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /api/health
+    
     envVars:
+      # Node version
       - key: NODE_VERSION
         value: "20.18.0"
+      
+      # Environment mode
+      - key: NODE_ENV
+        value: "production"
+      
+      # Database connection (set in Dashboard)
       - key: MONGODB_URI
-        sync: false
+        sync: false  # Don't sync, must be set manually in Dashboard
+      
+      # OpenAI API configuration (set in Dashboard)
       - key: OPENAI_API_KEY
-        sync: false
+        sync: false  # Don't sync, keep secret
+      
+      # Use real OpenAI API in production
       - key: MOCK_OPENAI
         value: "false"
-      # Optional: lock CORS to your static site URL after first deploy (Dashboard → Backend → Environment).
-      # If unset, the app allows any origin (see Backend/server.js).
+      
+      # Allow test endpoint during testing (disable in production)
+      - key: ENABLE_TEST_ENDPOINT
+        value: "false"
+      
+      # CORS: Configure after first deploy
+      # Set via Dashboard → Services → sigmagpt-backend → Environment
+      # Example: https://sigmagpt-frontend.onrender.com
+      # - key: CORS_ORIGIN
+      #   value: "https://..."
 
+  # Frontend Static Site
   - type: web
     name: sigmagpt-frontend
     runtime: static
     region: oregon
-    plan: free
+    plan: free  # Perfect for static sites
     rootDir: Frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: ./Frontend/dist
+    staticPublishPath: ./dist
+    
     envVars:
+      # Auto-inject backend URL from the backend service
       - key: VITE_API_BASE_URL
         fromService:
           name: sigmagpt-backend
           type: web
           envVarKey: RENDER_EXTERNAL_URL
+
+# ============================================
+# DEPLOYMENT CHECKLIST
+# ============================================
+# Before deploying:
+# 1. ✓ MongoDB Atlas account with database created
+# 2. ✓ MongoDB user account with password
+# 3. ✓ MongoDB network access set to 0.0.0.0/0
+# 4. ✓ OpenAI API key obtained
+# 5. ✓ GitHub repo is public and this file is committed
+#
+# During initial Blueprint setup:
+# 1. Set MONGODB_URI with Atlas SRV string (include /sigmagpt and password)
+# 2. Set OPENAI_API_KEY with your API key
+# 3. Let CORS auto-populate, or set manually after deploy
+#
+# After deployment:
+# 1. Test backend health: https://<backend>.onrender.com/api/health
+# 2. Test frontend: https://<frontend>.onrender.com
+# 3. Configure CORS_ORIGIN in backend if needed
+# 4. Redeploy backend if CORS changes
+
+# ============================================
+# PRODUCTION NOTES
+# ============================================
+# - Free tier services spin down after inactivity (~30 min)
+# - First request after spin-down may take 30-60 seconds
+# - Upgrade to "Standard" for production reliability
+# - Enable auto-deploy from GitHub for continuous deployment
+# - Set up monitoring/alerts in Render Dashboard
+# - Regularly rotate API keys and database passwords
+

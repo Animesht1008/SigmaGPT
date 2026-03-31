@@ -20,7 +20,8 @@ const ThreadSchema = new mongoose.Schema({
     threadId: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        index: true  // Index for faster lookups
     },
     title: {
         type: String,
@@ -29,12 +30,17 @@ const ThreadSchema = new mongoose.Schema({
     messages: [MessageSchema],
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        index: true  // Index for sorting
     },
     updatedAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        index: true  // Index for sorting recent chats
     }
 });
+
+// Auto index on the collection (useful for production)
+ThreadSchema.index({ updatedAt: -1 });
 
 export default mongoose.model("Thread", ThreadSchema);

@@ -1,5 +1,7 @@
 {
   "name": "sigmagpt-backend",
+  "version": "1.0.0",
+  "description": "SigmaGPT Backend - Express/Node.js API with OpenAI integration",
   "private": true,
   "type": "module",
   "engines": {
@@ -10,11 +12,14 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongoose": "^8.16.1",
-    "nodemon": "^3.1.10",
     "openai": "^5.5.1"
   },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "dev": "NODE_ENV=development nodemon server.js",
+    "start": "node server.js",
+    "prod": "NODE_ENV=production node server.js"
   }
 }
